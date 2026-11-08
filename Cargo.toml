@@ -1,0 +1,27 @@
+[package]
+name = "sqs-poller"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.82"
+license = "Apache-2.0"
+description = "An SQS poller that backs off exponentially while the queue is empty and resets the moment a message arrives"
+repository = "https://github.com/conao3/rust-sqs-poller"
+homepage = "https://github.com/conao3/rust-sqs-poller"
+keywords = ["aws", "sqs", "polling", "backoff", "queue"]
+categories = ["api-bindings", "command-line-utilities"]
+
+[features]
+default = ["http"]
+http = ["dep:reqwest"]
+
+[dependencies]
+aws-config = "1"
+aws-sdk-sqs = "1"
+clap = { version = "4", features = ["derive", "env"] }
+fastrand = "2"
+reqwest = { version = "0.12", features = ["rustls-tls"], default-features = false, optional = true }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "signal", "sync", "time"] }
+tokio-util = "0.7"
+
+[profile.release]
+lto = true
