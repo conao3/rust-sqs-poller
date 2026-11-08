@@ -9,6 +9,7 @@ repository = "https://github.com/conao3/rust-sqs-poller"
 homepage = "https://github.com/conao3/rust-sqs-poller"
 keywords = ["aws", "sqs", "polling", "backoff", "queue"]
 categories = ["api-bindings", "command-line-utilities"]
+exclude = [".github"]
 
 [features]
 default = ["http"]
