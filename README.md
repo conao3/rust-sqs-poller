@@ -37,7 +37,7 @@ sqs-poller sleeps between polls instead:
 3. Got nothing: sleep, then double the sleep (1 s, 2 s, 4 s, ...) up to a cap of 300 s, and keep it there while the queue stays empty.
 4. A message arrives: the sleep resets to 1 s.
 
-An idle queue costs about 290 receives a day at the defaults instead of 4,320. A busy queue skips the backoff: a non-empty receive resets it, and the next poll runs at once.
+An idle queue costs about 350 receives a day at the defaults instead of 4,320: each cycle is the 20 second long poll plus a jittered sleep of 150 to 300 seconds. With `--no-jitter` it is about 270. A busy queue skips the backoff: a non-empty receive resets it, and the next poll runs at once.
 
 ## CLI
 
