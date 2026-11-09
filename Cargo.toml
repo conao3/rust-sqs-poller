@@ -17,10 +17,10 @@ http = ["dep:reqwest"]
 
 [dependencies]
 aws-config = "1"
-aws-sdk-sqs = "1"
+aws-sdk-sqs = { version = "1", default-features = false, features = ["default-https-client", "rt-tokio"] }
 clap = { version = "4", features = ["derive", "env"] }
 fastrand = "2"
-reqwest = { version = "0.12", features = ["rustls-tls"], default-features = false, optional = true }
+reqwest = { version = "0.13", features = ["rustls"], default-features = false, optional = true }
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "signal", "sync", "time"] }
 tokio-util = "0.7"
 
