@@ -13,12 +13,12 @@
 </p>
 
 <p align="center">
-  <a href="#why">Why</a> ·
-  <a href="#cli">CLI</a> ·
-  <a href="#tuning">Tuning</a> ·
-  <a href="#library">Library</a> ·
-  <a href="#cost-notes">Cost notes</a> ·
-  <a href="https://crates.io/crates/sqs-poller">crates.io</a> ·
+  <a href="#why">Why</a> |
+  <a href="#cli">CLI</a> |
+  <a href="#tuning">Tuning</a> |
+  <a href="#library">Library</a> |
+  <a href="#cost-notes">Cost notes</a> |
+  <a href="https://crates.io/crates/sqs-poller">crates.io</a> |
   <a href="https://docs.rs/sqs-poller">docs.rs</a>
 </p>
 
