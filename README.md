@@ -100,7 +100,7 @@ One trade-off to know about: a message that lands in an idle queue waits for the
 gh workflow run release.yml --ref master -f version_bump=patch
 ```
 
-The `Release` workflow bumps the version, runs the CI checks, pushes the version commit and the `v<version>` tag, publishes the crate to crates.io with trusted publishing, and creates the GitHub Release. Choose `minor` or `major` for a larger bump.
+The `Release` workflow bumps the version, verifies the crate, pushes the version commit and the `v<version>` tag, publishes the crate to crates.io with trusted publishing, and creates the GitHub Release. Choose `minor` or `major` for a larger bump.
 
 ## License
 
