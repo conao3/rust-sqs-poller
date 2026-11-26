@@ -94,6 +94,14 @@ SQS charges per request, and a receive call costs the same whether it returns 0 
 
 One trade-off to know about: a message that lands in an idle queue waits for the current sleep to end before it is picked up, on top of the long poll wait. At the 300 s cap that is up to 5 minutes of pickup latency. Lower `--max-interval-secs` if your queue is latency sensitive and sits idle most of the time.
 
+## Release
+
+```bash
+gh workflow run release.yml --ref master -f version_bump=patch
+```
+
+The `Release` workflow bumps the version, runs the CI checks, pushes the version commit and the `v<version>` tag, publishes the crate to crates.io with trusted publishing, and creates the GitHub Release. Choose `minor` or `major` for a larger bump.
+
 ## License
 
 Apache-2.0. See [LICENSE](LICENSE).
