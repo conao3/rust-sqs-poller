@@ -48,7 +48,7 @@ $ sqs-poller --queue-url https://sqs.ap-northeast-1.amazonaws.com/123456789012/j
 
 Each message goes to one sink. A message is deleted only when its sink accepts it:
 
-- **Standard output (default).** Prints one JSON line per message with `messageId`, `body`, and `attributes`. Handy for pipes and for draining a queue into a file.
+- **Standard output (default).** Prints one JSON line per message with `messageId`, `body`, and `attributes`. The poller does not request message attributes, so `attributes` is an empty object. Handy for pipes and for draining a queue into a file.
 - **HTTP endpoint.** `sqs-poller --queue-url <url> --endpoint http://127.0.0.1:8080/work` POSTs each message body, with an `x-sqs-message-id` header. A 2xx answer deletes the message, anything else leaves it for redelivery. This is the sqsd shape, without the daemon having to run on Elastic Beanstalk.
 - **Command.** `sqs-poller --queue-url <url> --command ./handle.sh` runs the command once per message, with the body on stdin and the message ID in `$SQS_MESSAGE_ID`. Exit status 0 deletes the message.
 
@@ -84,15 +84,15 @@ let stats = run(config, client, |message| async move {
 }, CancellationToken::new()).await;
 ```
 
-The handler runs one message at a time, in receive order. `run` returns the counters (`received`, `deleted`, `failed`, `empty_polls`, `receive_errors`) once the cancellation token fires. Receive and delete errors are retried with the same backoff and reported through the optional `Config::on_error` callback.
+The handler runs one message at a time, in receive order. `run` returns the counters (`received`, `deleted`, `failed`, `empty_polls`, `receive_errors`) once the cancellation token fires. Receive, delete, and handler errors go to the optional `Config::on_error` callback. After a receive error, `run` grows the sleep as it does after an empty poll and polls again. A message whose delete fails stays in the queue and comes back after its visibility timeout.
 
 The backoff itself is a small pure type, [`Backoff`](https://docs.rs/sqs-poller/latest/sqs_poller/struct.Backoff.html), if you want the sleep math inside your own receive loop.
 
 ## Cost notes
 
-SQS charges per request, and a receive call costs the same whether it returns 0 messages or 10. The backoff cuts the idle cost by about 93% at the defaults. It does not change what a busy queue costs, and it should not: when messages flow, you want them drained fast.
+SQS charges per request, and a receive call costs the same whether it returns 0 messages or 10. The backoff cuts the idle cost by about 92% at the defaults, and by about 94% with `--no-jitter`. It does not change what a busy queue costs, and it should not: when messages flow, you want them drained fast.
 
-One trade-off to know about: a message that lands in an idle queue waits for the current sleep to end before it is picked up, on top of the long poll wait. At the 300 s cap that is up to 5 minutes of pickup latency. Lower `--max-interval-secs` if your queue is latency sensitive and sits idle most of the time.
+One trade-off to know about: a message that lands in an idle queue while the poller sleeps waits for the sleep to end before it is picked up. A message that lands during a long poll comes back at once. At the 300 s cap that is up to 5 minutes of pickup latency. Lower `--max-interval-secs` if your queue is latency sensitive and sits idle most of the time.
 
 ## Release
 
